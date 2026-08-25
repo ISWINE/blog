@@ -157,10 +157,56 @@
           </div>
           <h1>${escapeHtml(meta.title || slug)}</h1>
           <div class="post-body">${renderMarkdown(body)}</div>
-        </article>`;
+        </article>
+        <div id="gitalk-container"><div class="loading">加载评论…</div></div>`;
+      loadComments();
     } catch (e) {
       appEl.innerHTML = `<div class="error">加载失败：${escapeHtml(e.message)}<br><a href="#/">返回列表</a></div>`;
       toast("加载失败", "error");
+    }
+  }
+
+  /* ---- 评论（Gitalk）---- */
+  function postId() {
+    const hash = location.hash.replace(/^#/, "");
+    const m = hash.match(/^\/post\/(.+)$/);
+    return m ? m[1] : location.href;
+  }
+  function loadComments() {
+    const container = document.getElementById("gitalk-container");
+    if (!container || container.dataset.gitalkInited) return;
+    container.dataset.gitalkInited = "1";
+    if (typeof Gitalk === "function") { initGitalk(container); return; }
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js";
+    s.onload = () => initGitalk(container);
+    s.onerror = () => { container.innerHTML = '<div class="error">评论组件加载失败，请刷新重试。</div>'; };
+    document.head.appendChild(s);
+    if (!document.querySelector('link[href*="gitalk.css"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css";
+      document.head.appendChild(link);
+    }
+  }
+  function initGitalk(container) {
+    const g = (window.SITE && SITE.gitalk) || {};
+    const owner = (window.SITE && SITE.owner) || "ISWINE";
+    const repo = (window.SITE && SITE.repo) || "blog";
+    try {
+      const gitalk = new Gitalk({
+        clientID: g.clientID || "",
+        clientSecret: "not-used", // 真实密钥由 worker-proxy 注入，前端不持有
+        proxy: g.proxy || "",
+        owner: owner,
+        repo: repo,
+        admin: [owner],
+        id: postId(),
+        distractionFreeMode: false,
+      });
+      gitalk.render(container);
+    } catch (e) {
+      container.innerHTML = '<div class="error">评论初始化失败：' + escapeHtml(e.message) + '</div>';
     }
   }
 

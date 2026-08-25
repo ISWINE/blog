@@ -9,4 +9,10 @@ const SITE = {
   branch: "main", // 分支
   postsDir: "posts", // 文章目录
   aboutFile: "about.md", // 关于页文件
+  // Gitalk 评论（可选）。clientID 在 GitHub OAuth App 里拿到；proxy 是 Cloudflare Worker 地址。
+  // clientSecret 不写在这里——由 worker-proxy.js 在服务端注入，前端永远看不到真实密钥。
+  gitalk: {
+    clientID: "your-oauth-app-client-id", // 去 GitHub 建 OAuth App 后填入
+    proxy: "https://你的worker.workers.dev", // 部署 worker-proxy.js 后的地址
+  },
 };

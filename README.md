@@ -115,8 +115,38 @@ tags: [标签1, 标签2]
 - `title` / `date` / `tags` 会同步到 `posts.json`，用于列表展示与搜索。
 - `excerpt`（摘要）与 `readTime`（阅读时长）由后台在发布时自动从正文生成。
 
+## 评论功能（Gitalk）
+
+每篇文章底部有一个评论区。评论基于 **GitHub Issue**，读者用 GitHub 账号登录即可评论，完全不需要后端服务器——评论存在你仓库的 Issue 里，你去 GitHub 关掉 Issue 就等于删评论。
+
+### 原理与安全设计
+
+- 读者登录走 GitHub OAuth，需要 `public_repo` 权限（公开仓库够用）。
+- 评论存在 `blog` 仓库的 Issue 里，每篇文章一个 Issue（用 slug 做唯一标识）。
+- **安全**：`clientSecret`（密钥）只保存在 Cloudflare Worker 的环境变量里，前端代码里只有一个占位值，真实密钥由 Worker 在服务端注入后再转发给 GitHub。这样即使别人查看你博客的源码，也拿不到密钥。
+
+### 开通步骤
+
+1. **建 GitHub OAuth App**（拿 clientID + clientSecret）：
+   - GitHub 右上角头像 → **Settings** → **Developer settings** → **OAuth Apps** → **New OAuth App**。
+   - Application name 随意（如「一隅评论」）。
+   - **Authorization callback URL** 填 `https://你的用户名.github.io/仓库名/`（就是你博客的地址）。
+   - Homepage URL 填博客地址。
+   - 点 **Register**。
+   - 拿到 **Client ID** 和 **Client Secret**（后者只此一次，立刻复制）。
+
+2. **部署代理 Worker**（处理 CORS + 注入密钥）：
+   - 本仓库里有 `worker-proxy.js`。
+   - 去 [cloudflare.com/workers](https://www.cloudflare.com/workers/) 注册并登录 → Create a Worker → 把 `worker-proxy.js` 的代码贴进去 → Deploy。
+   - 进入 Settings → Variables，添加环境变量 `GITALK_CLIENT_SECRET`，值为你刚才的 Client Secret。
+   - 拿到分配的 URL（形如 `https://xxx.workers.dev`）。
+
+3. **配置**：打开 `config.js`，把 `gitalk.clientID` 换成你的 Client ID，`gitalk.proxy` 换成 Worker 地址。提交后刷新页面即可。
+
+> 如果暂时不想挂 Worker，也可以直接把真实 `clientSecret` 写进 `config.js` 的 `gitalk.clientSecret`，并把 `proxy` 置空——但这样密钥会暴露在前端源码里，**仅适合个人小博客**，公开仓库不推荐。
+
 ## 备注
 
 - 每次发布/更新会生成两个 commit：`posts/<slug>.md` 与 `posts.json`。这是有意的——索引必须和正文同步。
 - 明暗模式会记住你的选择（`localStorage`），首次访问跟随系统偏好。
-- v1 暂不含：代码语法高亮（目前是干净的等宽样式）、评论系统。后续可按需加入。
+- v1 暂不含：代码语法高亮（目前是干净的等宽样式）。
