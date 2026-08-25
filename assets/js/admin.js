@@ -257,7 +257,10 @@
       els.userHint.innerHTML = "已登录 · <b>" + escapeHtml(user.login) + "</b> · 仓库 <b>" + escapeHtml(owner + "/" + repo) + "</b>";
       await loadPostList();
     } catch (e) {
-      toast("登录失败：" + e.message, "error");
+      const msg = /401|403/.test(e.message)
+        ? "Token 无效、已过期或权限不足。请到 GitHub 重新生成一个：Settings → Developer settings → Personal access tokens，选 fine-grained（仅 ISWINE/blog 仓库，Contents: Read & write）或 classic（repo 权限），复制完整 Token 后再试。"
+        : e.message;
+      toast("登录失败：" + msg, "error");
       localStorage.removeItem(LS.token);
     } finally { els.loginBtn.disabled = false; }
   }
