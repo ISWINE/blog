@@ -61,6 +61,11 @@
     const d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
+  function cleanToken(t) {
+    // GitHub Token 只含字母、数字、下划线；清除复制时混入的不可见 Unicode、换行等，
+    // 否则浏览器会拒绝含非 ISO-8859-1 字符的 fetch header。
+    return (t || "").replace(/[^a-zA-Z0-9_]/g, "");
+  }
 
   /* ---- frontmatter ---- */
   function parseFrontmatter(md) {
@@ -227,7 +232,7 @@
         token = await navigator.clipboard.readText();
       }
     } catch (e) { /* 剪贴板不可读，改用手动填写 */ }
-    token = (token || "").trim();
+    token = cleanToken(token);
     if (!token) {
       toast("读取剪贴板失败，请改用「手动填写」", "error");
       return;
@@ -238,7 +243,7 @@
   }
   async function doLogin(silent) {
     const owner = els.fOwner.value.trim(), repo = els.fRepo.value.trim(),
-      branch = els.fBranch.value.trim() || "main", token = els.fToken.value.trim();
+      branch = els.fBranch.value.trim() || "main", token = cleanToken(els.fToken.value);
     if (!owner || !repo || !token) { toast("请填写用户名、仓库名和 Token", "error"); return; }
     cfg = { owner, repo, branch, token };
     els.loginBtn.disabled = true;
