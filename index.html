@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一隅 · 一个安静、干净的单页博客">
+  <title>一隅 · 记录一些值得记住的东西</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="title">一隅</span>
+      <span class="tagline">记录一些值得记住的东西</span>
+    </div>
+    <nav class="nav">
+      <a href="#/" class="active">文章</a>
+      <a href="#/about">关于</a>
+      <a href="admin.html">后台</a>
+    </nav>
+    <button id="theme-toggle" class="icon-btn" title="切换明暗模式">🌙</button>
+  </header>
+
+  <main class="main">
+    <div class="search-wrap">
+      <input id="search" class="search" type="search" placeholder="搜索文章标题或标签…" autocomplete="off">
+    </div>
+    <div id="app"><div class="loading">正在加载文章…</div></div>
+  </main>
+
+  <footer class="footer">一隅 · 纯静态单页博客 · 托管于 GitHub Pages</footer>
+
+  <button id="back-top" class="back-top" title="返回顶部">↑</button>
+  <div id="toast" class="toast"></div>
+
+  <script src="assets/vendor/marked.min.js"></script>
+  <script src="assets/vendor/purify.min.js"></script>
+  <script src="config.js"></script>
+  <script src="assets/js/blog.js"></script>
+</body>
+</html>

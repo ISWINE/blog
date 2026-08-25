@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>后台 · 一隅</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="title">一隅</span><span class="tagline">后台管理</span></div>
+    <nav class="nav"><a href="index.html">博客</a><a href="admin.html" class="active">后台</a></nav>
+  </header>
+
+  <main class="admin-wrap">
+    <!-- 登录 -->
+    <section id="login-card" class="admin-card">
+      <h2>登录后台</h2>
+      <p class="hint">纯静态站点没有服务端，所以需要一个 Token 来证明你是仓库的主人。用户名、仓库名会从当前网址自动识别（部署后就是你的 GitHub 用户名和仓库名），只需设置一次 Token，之后自动保存在你的浏览器里，不会上传到仓库。</p>
+
+      <ol class="steps">
+        <li>在 GitHub 创建一个 Token（<a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=%E4%B8%80%E9%9A%85%E5%8D%9A%E5%8D%88%E5%90%8E%E5%8F%B0" target="_blank" rel="noopener">点这里打开建 Token 页面 ↗</a>）。
+          建议选 <b>fine-grained</b>（更安全），权限只给 Contents: Read &amp; Write；公开仓库用 <code>public_repo</code> 也够。</li>
+        <li>创建后点 <b>Copy</b> 复制到剪贴板（不要关掉 GitHub 那个页面）。</li>
+        <li>回到此页，点下面的按钮，自动从剪贴板粘贴并登录。</li>
+      </ol>
+
+      <button id="paste-login-btn" class="btn" style="font-size:1rem;padding:0.85rem 1.2rem">📋 从剪贴板粘贴 Token 并登录</button>
+
+      <details class="manual">
+        <summary>或者手动填写（复制不了时用）</summary>
+        <div class="form-row" style="margin-top:1rem">
+          <label class="field">GitHub 用户名<input id="f-owner" type="text" placeholder="your-github-username"></label>
+          <label class="field">仓库名<input id="f-repo" type="text" placeholder="blog"></label>
+          <label class="field">分支<input id="f-branch" type="text" placeholder="main" value="main"></label>
+        </div>
+        <div class="form-row">
+          <label class="field" style="flex:1 1 100%">Personal Access Token<input id="f-token" type="password" placeholder="github_pat_…" autocomplete="off"></label>
+        </div>
+        <button id="login-btn" class="btn ghost">手动登录</button>
+      </details>
+
+      <p class="hint" id="link-hint"></p>
+    </section>
+
+    <!-- 文章管理 -->
+    <section id="list-panel" class="admin-card" style="display:none">
+      <h2>文章管理</h2>
+      <p class="hint" id="user-hint"></p>
+      <div id="post-list"></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+        <button id="new-btn" class="btn">＋ 新建文章</button>
+        <button id="sync-btn" class="btn ghost">从仓库同步索引</button>
+        <button id="logout-btn" class="btn ghost" style="margin-left:auto">退出登录</button>
+      </div>
+    </section>
+
+    <!-- 编辑器 -->
+    <section id="editor-panel" class="admin-card" style="display:none">
+      <h2 id="editor-title">新建文章</h2>
+      <div class="form-row">
+        <label class="field">标题<input id="e-title" type="text" placeholder="文章标题"></label>
+        <label class="field">slug<input id="e-slug" type="text" placeholder="留空则从标题生成"></label>
+        <label class="field">日期<input id="e-date" type="date"></label>
+      </div>
+      <div class="form-row">
+        <label class="field" style="flex:1 1 100%">标签（逗号分隔）<input id="e-tags" type="text" placeholder="标签1, 标签2"></label>
+      </div>
+      <div class="editor">
+        <div class="editor-pane">
+          <div class="pane-head">Markdown</div>
+          <textarea id="e-body" placeholder="# 标题&#10;正文…"></textarea>
+        </div>
+        <div class="editor-pane">
+          <div class="pane-head">实时预览</div>
+          <div id="e-preview" class="preview"></div>
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:1rem">
+        <label class="field" style="flex:1 1 100%">上传图片（插入到光标处）<input id="img-input" type="file" accept="image/*"></label>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:1rem">
+        <button id="publish-btn" class="btn">发布</button>
+        <button id="cancel-btn" class="btn ghost">取消</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <button id="back-top" class="back-top">↑</button>
+
+  <script src="assets/vendor/marked.min.js"></script>
+  <script src="assets/vendor/purify.min.js"></script>
+  <script src="config.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
