@@ -14,8 +14,8 @@ const SITE = {
   // 将生成的 repoId / categoryId 填入下方。
   giscus: {
     repo: "ISWINE/blog",
-    repoId: "",        // 由 giscus.app 生成
+    repoId: "R_kgDOUD1OWw", // 由 giscus.app 生成
     category: "Announcements",
-    categoryId: "",    // 由 giscus.app 生成
+    categoryId: "DIC_kwDOUD1OW84DENIz", // 由 giscus.app 生成
   },
 };

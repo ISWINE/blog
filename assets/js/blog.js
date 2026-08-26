@@ -169,7 +169,7 @@
 
   /* ---- 评论（giscus）---- */
   function giscusTheme() {
-    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "noborder_dark" : "noborder_light";
   }
   function syncGiscusTheme() {
     const iframe = document.querySelector("iframe.giscus-frame");
@@ -184,7 +184,7 @@
     const container = document.getElementById("giscus-container");
     if (!container) return;
     container.innerHTML = ""; // 清掉上一次文章的评论 iframe
-    const g = (window.SITE && SITE.giscus) || {};
+    const g = (typeof SITE !== "undefined" && SITE.giscus) || {};
     if (!g.repoId || !g.categoryId) {
       container.innerHTML = `<div class="error">评论未配置：请在 config.js 的 giscus 中填入 repoId 和 categoryId。</div>`;
       return;
