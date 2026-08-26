@@ -1,16 +1,6 @@
 {
   "posts": [
     {
-      "slug": "bridge-network-cfion",
-      "title": "Bridge-network-cfion",
-      "date": "2026-08-27",
-      "tags": [
-        "vmware"
-      ],
-      "excerpt": "Bridge network cfion 配置静态网卡 查看windows的网关 linux ifconfig Windows ipconfig /all C:\\Users\\126…",
-      "readTime": 3
-    },
-    {
       "slug": "配置本地镜像仓库",
       "title": "配置本地镜像仓库",
       "date": "2026-08-27",
@@ -21,15 +11,24 @@
       "readTime": 1
     },
     {
-      "slug": "测试",
-      "title": "测试",
-      "date": "2026-08-26",
+      "slug": "bridge-network-cfion",
+      "title": "Bridge-network-cfion",
+      "date": "2026-08-27",
       "tags": [
-        "测试",
-        "ceshi"
+        "vmware"
       ],
-      "excerpt": "你好",
-      "readTime": 1
+      "excerpt": "Bridge network cfion 配置静态网卡 查看windows的网关 linux ifconfig Windows ipconfig /all C:\\Users\\126…",
+      "readTime": 3
+    },
+    {
+      "slug": "samba",
+      "title": "samba",
+      "date": "2026-08-27",
+      "tags": [
+        "samba"
+      ],
+      "excerpt": "samba CentOS VMware Windows 环境samba CentOS VMware Windows 检测 samba 有没有安装 本文创建一个最简单的samb多用户…",
+      "readTime": 10
     },
     {
       "slug": "测试编辑器",
@@ -41,6 +40,17 @@
       ],
       "excerpt": "1. 为什么不能直接“提取”CSDN 编辑器？ CSDN 的 Markdown 编辑器是闭源商业产品，其核心代码（包括前端渲染、图片上传、目录生成等）并未开源，无法直接下载或移植。…",
       "readTime": 4
+    },
+    {
+      "slug": "测试",
+      "title": "测试",
+      "date": "2026-08-26",
+      "tags": [
+        "测试",
+        "ceshi"
+      ],
+      "excerpt": "你好",
+      "readTime": 1
     },
     {
       "slug": "welcome",
