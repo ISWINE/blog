@@ -11,15 +11,14 @@
       "readTime": 3
     },
     {
-      "slug": "测试编辑器",
-      "title": "测试编辑器",
-      "date": "2026-08-26",
+      "slug": "配置本地镜像仓库",
+      "title": "配置本地镜像仓库",
+      "date": "2026-08-27",
       "tags": [
-        "测试",
-        "ceshi"
+        "yum"
       ],
-      "excerpt": "1. 为什么不能直接“提取”CSDN 编辑器？ CSDN 的 Markdown 编辑器是闭源商业产品，其核心代码（包括前端渲染、图片上传、目录生成等）并未开源，无法直接下载或移植。…",
-      "readTime": 4
+      "excerpt": "config yum local wh 配置本地镜像仓库 挂载CDROM 配置yum仓库 pwd ![avatar](http://oyu299liy.bkt.clouddn.co…",
+      "readTime": 1
     },
     {
       "slug": "测试",
@@ -31,6 +30,17 @@
       ],
       "excerpt": "你好",
       "readTime": 1
+    },
+    {
+      "slug": "测试编辑器",
+      "title": "测试编辑器",
+      "date": "2026-08-26",
+      "tags": [
+        "测试",
+        "ceshi"
+      ],
+      "excerpt": "1. 为什么不能直接“提取”CSDN 编辑器？ CSDN 的 Markdown 编辑器是闭源商业产品，其核心代码（包括前端渲染、图片上传、目录生成等）并未开源，无法直接下载或移植。…",
+      "readTime": 4
     },
     {
       "slug": "welcome",
