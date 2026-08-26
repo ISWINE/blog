@@ -143,24 +143,27 @@
 
   async function viewPost(slug) {
     currentSlug = slug;
-    appEl.innerHTML = `<div class="loading">正在加载…</div>`;
+    // 先渲染骨架，评论区和正文并行加载：评论区容器立即可见，不等正文 fetch 完成
+    appEl.innerHTML = `
+      <div class="breadcrumb"><a href="#/">← 返回</a></div>
+      <article class="post">
+        <div class="loading" id="post-loading">正在加载…</div>
+      </article>
+      <div id="giscus-container"></div>`;
+    loadComments();
     try {
       const { meta, body } = await loadPost(slug);
       const rt = readingTime(body);
       document.title = (meta.title || slug) + " · 一隅";
-      appEl.innerHTML = `
-        <div class="breadcrumb"><a href="#/">← 返回</a></div>
-        <article class="post">
-          <div class="meta">
-            <span>${escapeHtml(meta.date || "")}</span>
-            ${(meta.tags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("")}
-            <span>·</span><span>${rt} 分钟阅读</span>
-          </div>
-          <h1>${escapeHtml(meta.title || slug)}</h1>
-          <div class="post-body">${renderMarkdown(body)}</div>
-        </article>
-        <div id="giscus-container"></div>`;
-      loadComments();
+      // 只替换正文占位，不动 giscus 容器，避免评论区二次初始化
+      document.getElementById("post-loading").outerHTML = `
+        <div class="meta">
+          <span>${escapeHtml(meta.date || "")}</span>
+          ${(meta.tags || []).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("")}
+          <span>·</span><span>${rt} 分钟阅读</span>
+        </div>
+        <h1>${escapeHtml(meta.title || slug)}</h1>
+        <div class="post-body">${renderMarkdown(body)}</div>`;
     } catch (e) {
       appEl.innerHTML = `<div class="error">加载失败：${escapeHtml(e.message)}<br><a href="#/">返回列表</a></div>`;
       toast("加载失败", "error");
