@@ -30,6 +30,7 @@
     const t = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
     localStorage.setItem("theme", t);
     applyTheme(t);
+    syncGiscusTheme();
   });
 
   /* ===================== 工具 ===================== */
@@ -158,7 +159,7 @@
           <h1>${escapeHtml(meta.title || slug)}</h1>
           <div class="post-body">${renderMarkdown(body)}</div>
         </article>
-        <div id="gitalk-container"><div class="loading">加载评论…</div></div>`;
+        <div id="giscus-container"></div>`;
       loadComments();
     } catch (e) {
       appEl.innerHTML = `<div class="error">加载失败：${escapeHtml(e.message)}<br><a href="#/">返回列表</a></div>`;
@@ -166,48 +167,45 @@
     }
   }
 
-  /* ---- 评论（Gitalk）---- */
-  function postId() {
-    const hash = location.hash.replace(/^#/, "");
-    const m = hash.match(/^\/post\/(.+)$/);
-    return m ? m[1] : location.href;
+  /* ---- 评论（giscus）---- */
+  function giscusTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  }
+  function syncGiscusTheme() {
+    const iframe = document.querySelector("iframe.giscus-frame");
+    if (iframe) {
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: giscusTheme() } } },
+        "https://giscus.app"
+      );
+    }
   }
   function loadComments() {
-    const container = document.getElementById("gitalk-container");
-    if (!container || container.dataset.gitalkInited) return;
-    container.dataset.gitalkInited = "1";
-    if (typeof Gitalk === "function") { initGitalk(container); return; }
+    const container = document.getElementById("giscus-container");
+    if (!container) return;
+    container.innerHTML = ""; // 清掉上一次文章的评论 iframe
+    const g = (window.SITE && SITE.giscus) || {};
+    if (!g.repoId || !g.categoryId) {
+      container.innerHTML = `<div class="error">评论未配置：请在 config.js 的 giscus 中填入 repoId 和 categoryId。</div>`;
+      return;
+    }
     const s = document.createElement("script");
-    s.src = "https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js";
-    s.onload = () => initGitalk(container);
-    s.onerror = () => { container.innerHTML = '<div class="error">评论组件加载失败，请刷新重试。</div>'; };
-    document.head.appendChild(s);
-    if (!document.querySelector('link[href*="gitalk.css"]')) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css";
-      document.head.appendChild(link);
-    }
-  }
-  function initGitalk(container) {
-    const g = (window.SITE && SITE.gitalk) || {};
-    const owner = (window.SITE && SITE.owner) || "ISWINE";
-    const repo = (window.SITE && SITE.repo) || "blog";
-    try {
-      const gitalk = new Gitalk({
-        clientID: g.clientID || "",
-        clientSecret: "not-used", // 真实密钥由 worker-proxy 注入，前端不持有
-        proxy: g.proxy || "",
-        owner: owner,
-        repo: repo,
-        admin: [owner],
-        id: postId(),
-        distractionFreeMode: false,
-      });
-      gitalk.render(container);
-    } catch (e) {
-      container.innerHTML = '<div class="error">评论初始化失败：' + escapeHtml(e.message) + '</div>';
-    }
+    s.src = "https://giscus.app/client.js";
+    s.setAttribute("data-repo", g.repo || "ISWINE/blog");
+    s.setAttribute("data-repo-id", g.repoId);
+    s.setAttribute("data-category", g.category || "Announcements");
+    s.setAttribute("data-category-id", g.categoryId);
+    s.setAttribute("data-mapping", "specific");
+    s.setAttribute("data-term", currentSlug || document.title);
+    s.setAttribute("data-strict", "0");
+    s.setAttribute("data-reactions-enabled", "1");
+    s.setAttribute("data-emit-metadata", "0");
+    s.setAttribute("data-input-position", "bottom");
+    s.setAttribute("data-theme", giscusTheme());
+    s.setAttribute("data-lang", "zh-CN");
+    s.crossOrigin = "anonymous";
+    s.async = true;
+    container.appendChild(s);
   }
 
   async function viewAbout() {

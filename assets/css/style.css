@@ -309,7 +309,11 @@ img { display: block; max-width: 100%; height: auto; }
 .toast.error { background: #c0392b; color: #fff; }
 .toast.ok { background: var(--accent); color: var(--accent-contrast); }
 
-/* ===================== 后台 ===================== */
+/* giscus 评论区与文章对齐 */
+#giscus-container {
+  max-width: var(--readw);
+  margin: 2rem auto;
+}
 .admin-wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
 .admin-card {
   background: var(--surface);

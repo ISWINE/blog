@@ -9,10 +9,13 @@ const SITE = {
   branch: "main", // 分支
   postsDir: "posts", // 文章目录
   aboutFile: "about.md", // 关于页文件
-  // Gitalk 评论（可选）。clientID 在 GitHub OAuth App 里拿到；proxy 是 Cloudflare Worker 地址。
-  // clientSecret 不写在这里——由 worker-proxy.js 在服务端注入，前端永远看不到真实密钥。
-  gitalk: {
-    clientID: "your-oauth-app-client-id", // 去 GitHub 建 OAuth App 后填入
-    proxy: "https://你的worker.workers.dev", // 部署 worker-proxy.js 后的地址
+  // giscus 评论（替代 Gitalk）。基于 GitHub Discussions，无需 OAuth 代理。
+  // 配置：仓库开启 Discussions → 去 giscus.app 安装 giscus GitHub App →
+  // 将生成的 repoId / categoryId 填入下方。
+  giscus: {
+    repo: "ISWINE/blog",
+    repoId: "",        // 由 giscus.app 生成
+    category: "Announcements",
+    categoryId: "",    // 由 giscus.app 生成
   },
 };
