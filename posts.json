@@ -1,14 +1,14 @@
 {
   "posts": [
     {
-      "slug": "配置本地镜像仓库",
-      "title": "配置本地镜像仓库",
+      "slug": "samba",
+      "title": "samba",
       "date": "2026-08-27",
       "tags": [
-        "yum"
+        "samba"
       ],
-      "excerpt": "config yum local wh 配置本地镜像仓库 挂载CDROM 配置yum仓库 pwd ![avatar](http://oyu299liy.bkt.clouddn.co…",
-      "readTime": 1
+      "excerpt": "samba CentOS VMware Windows 环境samba CentOS VMware Windows 检测 samba 有没有安装 本文创建一个最简单的samb多用户…",
+      "readTime": 10
     },
     {
       "slug": "bridge-network-cfion",
@@ -21,25 +21,24 @@
       "readTime": 3
     },
     {
-      "slug": "samba",
-      "title": "samba",
+      "slug": "配置本地镜像仓库",
+      "title": "配置本地镜像仓库",
       "date": "2026-08-27",
       "tags": [
-        "samba"
+        "yum"
       ],
-      "excerpt": "samba CentOS VMware Windows 环境samba CentOS VMware Windows 检测 samba 有没有安装 本文创建一个最简单的samb多用户…",
-      "readTime": 10
+      "excerpt": "config yum local wh 配置本地镜像仓库 挂载CDROM 配置yum仓库 pwd ![avatar](http://oyu299liy.bkt.clouddn.co…",
+      "readTime": 1
     },
     {
-      "slug": "测试编辑器",
-      "title": "测试编辑器",
-      "date": "2026-08-26",
+      "slug": "git命令",
+      "title": "git命令",
+      "date": "2026-08-27",
       "tags": [
-        "测试",
-        "ceshi"
+        "git"
       ],
-      "excerpt": "1. 为什么不能直接“提取”CSDN 编辑器？ CSDN 的 Markdown 编辑器是闭源商业产品，其核心代码（包括前端渲染、图片上传、目录生成等）并未开源，无法直接下载或移植。…",
-      "readTime": 4
+      "excerpt": "快速设置 如果你以前做过这种事情 要么 HTTPS SSH git@github.com:lihuatedata/44.git 我们建议每个存储库都包含一个 README， LIC…",
+      "readTime": 6
     },
     {
       "slug": "测试",
@@ -51,6 +50,17 @@
       ],
       "excerpt": "你好",
       "readTime": 1
+    },
+    {
+      "slug": "测试编辑器",
+      "title": "测试编辑器",
+      "date": "2026-08-26",
+      "tags": [
+        "测试",
+        "ceshi"
+      ],
+      "excerpt": "1. 为什么不能直接“提取”CSDN 编辑器？ CSDN 的 Markdown 编辑器是闭源商业产品，其核心代码（包括前端渲染、图片上传、目录生成等）并未开源，无法直接下载或移植。…",
+      "readTime": 4
     },
     {
       "slug": "welcome",
