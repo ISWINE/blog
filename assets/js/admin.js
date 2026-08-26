@@ -18,9 +18,8 @@
     userHint: $("#user-hint"),
     editorTitle: $("#editor-title"),
     fOwner: $("#f-owner"), fRepo: $("#f-repo"), fBranch: $("#f-branch"), fToken: $("#f-token"),
-    eTitle: $("#e-title"), eSlug: $("#e-slug"), eDate: $("#e-date"), eTags: $("#e-tags"), eBody: $("#e-body"),
-    ePreview: $("#e-preview"),
-    imgInput: $("#img-input"),
+    eTitle: $("#e-title"), eSlug: $("#e-slug"), eDate: $("#e-date"), eTags: $("#e-tags"),
+    editorEl: $("#e-editor"),
     loginBtn: $("#login-btn"), pasteLoginBtn: $("#paste-login-btn"), linkHint: $("#link-hint"),
     newBtn: $("#new-btn"), syncBtn: $("#sync-btn"),
     logoutBtn: $("#logout-btn"), publishBtn: $("#publish-btn"), cancelBtn: $("#cancel-btn"),
@@ -30,6 +29,7 @@
   let cfg = { owner: "", repo: "", branch: "main", token: "" };
   let editingSlug = null; // null = 新建
   let slugManual = false;
+  let vditor = null; // Vditor 实例
 
   /* ---- toast ---- */
   function toast(msg, kind) {
@@ -87,13 +87,7 @@
     return { meta, body: m[2] };
   }
 
-  /* ---- marked + purify ---- */
-  function renderMarkdown(md) {
-    const html = marked.parse(md, { gfm: true, breaks: true });
-    return DOMPurify.sanitize(html, { ADD_ATTR: ["target", "rel"] });
-  }
-
-  /* ---- GitHub API ---- */
+/* ---- GitHub API ---- */
   function authHeaders() {
     return cfg.token
       ? { "Authorization": "Bearer " + cfg.token, "Accept": "application/vnd.github+json" }
@@ -314,45 +308,58 @@
     els.eSlug.value = post ? post.slug : "";
     els.eDate.value = post ? (post.date || today()) : today();
     els.eTags.value = post ? post.tags : "";
-    els.eBody.value = post ? post.body : "";
-    updatePreview();
+    if (vditor) vditor.setValue(post ? post.body : "", true);
     els.list.style.display = "none";
     els.editor.style.display = "block";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   /* ---- 编辑器交互 ---- */
-  els.eTitle.addEventListener("input", () => { if (!slugManual) els.eSlug.value = slugify(els.eTitle.value); updatePreview(); });
+  els.eTitle.addEventListener("input", () => { if (!slugManual) els.eSlug.value = slugify(els.eTitle.value); });
   els.eSlug.addEventListener("focus", () => { slugManual = true; });
-  els.eBody.addEventListener("input", updatePreview);
-  function updatePreview() { els.ePreview.innerHTML = renderMarkdown(els.eBody.value || ""); }
 
-  /* ---- 图片上传 ---- */
-  els.imgInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  /* ---- Vditor 编辑器 ---- */
+  function initVditor() {
+    if (typeof Vditor === "undefined") { toast("编辑器脚本加载失败，请刷新页面", "error"); return; }
+    vditor = new Vditor("e-editor", {
+      cdn: "assets/vendor/vditor",
+      lang: "zh_CN",
+      mode: "ir",
+      height: 480,
+      cache: { enable: false },
+      placeholder: "# 标题\n正文…",
+      toolbar: [
+        "emoji", "headings", "bold", "italic", "strike", "|",
+        "line", "quote", "list", "ordered-list", "check", "outdent", "indent", "|",
+        "code", "inline-code", "link", "upload", "table", "|",
+        "undo", "redo", "|", "edit-mode", "both", "preview", "fullscreen", "outline",
+      ],
+      upload: { handler: uploadImages },
+      after: () => { vditor.focus(); },
+    });
+  }
+
+  /* ---- 图片上传（Vditor 工具栏 / 拖拽 / 粘贴触发）---- */
+  async function uploadImages(files) {
+    if (!cfg.token) return "请先登录后再上传图片";
     const base = els.eSlug.value || slugify(els.eTitle.value) || "img";
-    const name = base + "-" + Date.now() + "-" + file.name.replace(/[^\w.\u4e00-\u9fff-]/g, "_");
-    const rel = "assets/img/" + name;
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const data = String(reader.result).split(",")[1];
+    for (const file of files) {
+      const name = base + "-" + Date.now() + "-" + file.name.replace(/[^\w.\u4e00-\u9fff-]/g, "_");
+      const rel = "assets/img/" + name;
       try {
+        const data = await new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = () => res(String(reader.result).split(",")[1]);
+          reader.onerror = () => rej(new Error("读取图片失败"));
+          reader.readAsDataURL(file);
+        });
         await putFile(rel, data, "上传图片 " + name);
-        insertAtCursor(`![](${rel})`);
-        toast("图片已上传", "ok");
-      } catch (err) { toast("上传失败：" + err.message, "error"); }
-    };
-    reader.readAsDataURL(file);
-    e.target.value = "";
-  });
-  function insertAtCursor(text) {
-    const ta = els.eBody;
-    const s = ta.selectionStart, en = ta.selectionEnd;
-    ta.value = ta.value.slice(0, s) + text + ta.value.slice(en);
-    ta.focus();
-    ta.selectionStart = ta.selectionEnd = s + text.length;
-    updatePreview();
+        vditor.insertValue(`\n![](${rel})\n`);
+      } catch (err) {
+        return "上传失败：" + err.message;
+      }
+    }
+    return null;
   }
 
   /* ---- 发布 / 删除 / 同步 ---- */
@@ -364,9 +371,10 @@
     const slug = (els.eSlug.value || slugify(title)).trim();
     const date = els.eDate.value || today();
     const tags = els.eTags.value;
-    const body = els.eBody.value;
+    const body = vditor ? vditor.getValue() : "";
     if (!title) { toast("请填写标题", "error"); return; }
     if (!slug) { toast("请填写 slug", "error"); return; }
+    if (!body.trim()) { toast("正文不能为空", "error"); return; }
     setBusy(true);
     try {
       const md = buildMd({ title, slug, date, tags, body });
@@ -439,5 +447,6 @@
   window.addEventListener("scroll", () => els.backTop.classList.toggle("show", window.scrollY > 400));
   els.backTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
+  initVditor();
   loadAuth();
 })();

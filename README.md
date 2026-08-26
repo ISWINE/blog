@@ -1,13 +1,13 @@
 # 一隅
 
-一个干净、简洁、可托管在 GitHub Pages 的**纯静态单页博客**。文章用 Markdown 写，带一个**网页内置后台**，登录后可以直接在浏览器里写、实时预览、一键发布。
+一个干净、简洁、可托管在 GitHub Pages 的**纯静态单页博客**。文章用 Markdown 写，带一个**网页内置后台**，登录后可以直接在浏览器里写、一键发布。
 
 ## 特点
 
 - **纯静态**：HTML / CSS / JS，无构建工具，无后端，无数据库。
 - **零依赖读取**：博客用相对路径读取 `posts.json` + `posts/*.md`，本地和线上都能跑，不依赖 GitHub API，没有限流问题。
 - **在线后台**：`admin.html` 通过 GitHub Contents API 把文章提交进仓库，自动触发 Pages 重建。
-- **自托管依赖**：`marked`（Markdown 解析）与 `DOMPurify`（防 XSS）已下载到 `assets/vendor/`，站点完全自包含，不依赖第三方 CDN。
+- **Vditor 编辑器**：后台内置 [Vditor](https://github.com/Vanessa219/vditor) Markdown 编辑器（即时渲染模式，工具栏可切换三种模式，支持粘贴/拖拽上传图片），自托管于 `assets/vendor/vditor/`，不依赖第三方 CDN。
 - **精美简洁**：明暗模式、搜索、阅读时长、卡片列表、响应式布局。
 
 ## 文件结构
@@ -21,7 +21,7 @@
 │   ├── css/style.css
 │   ├── js/blog.js      # 博客前端
 │   ├── js/admin.js     # 后台逻辑
-│   └── vendor/         # marked.min.js + purify.min.js（自托管）
+│   └── vendor/         # marked.min.js + purify.min.js（阅读端）+ vditor/（编辑器）
 ├── posts/
 │   └── welcome.md      # 示例文章
 ├── about.md            # 关于页
@@ -89,8 +89,8 @@ https://你的用户名.github.io/仓库名/admin.html#token=TOKEN&owner=用户�
 
 - 登录后看到文章列表，点「新建文章」或某篇文章的「编辑」。
 - 填写标题、slug（留空会从标题自动生成）、日期、标签（逗号分隔）。
-- 左侧写 Markdown，右侧实时预览。支持 GFM 表格、任务列表、代码块、引用、图片等。
-- **上传图片**：选文件会自动上传到 `assets/img/`，并把 `![](assets/img/xxx)` 插入到光标处。
+- 下方是 Vditor Markdown 编辑器：即时渲染模式下输入即见效果，工具栏可切换三种模式（即时渲染 / 分屏 / WYSIWYG）。支持 GFM 表格、任务列表、代码块、引用、图片等。
+- **上传图片**：工具栏图片按钮，或直接把图片拖入编辑器、粘贴到编辑器，会自动上传到 `assets/img/` 并插入 `![](assets/img/xxx)`。
 - 点「发布」或「更新」，文章会以 `posts/<slug>.md` 的形式提交，索引 `posts.json` 同步更新。
 - GitHub Pages 重建通常需要几分钟，之后刷新博客即可看到新文章。
 

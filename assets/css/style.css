@@ -369,19 +369,6 @@ img { display: block; max-width: 100%; height: auto; }
 .btn.danger { background: #c0392b; color: #fff; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.editor { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.editor-pane { display: flex; flex-direction: column; }
-.editor-pane .pane-head { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; padding: 0 0.2rem; }
-.preview { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-soft); min-height: 260px; overflow: auto; }
-.preview h1, .preview h2, .preview h3 { font-family: "Songti SC", "STSong", "SimSun", "Georgia", serif; }
-.preview p, .preview li { margin: 0.6rem 0; }
-.preview code { font-family: "SFMono-Regular", "JetBrains Mono", "Menlo", Consolas, monospace; font-size: 0.86em; background: var(--code-bg); color: var(--code-text); padding: 0.1em 0.35em; border-radius: 4px; }
-.preview pre { background: var(--code-bg); color: var(--code-text); padding: 0.9rem; border-radius: var(--radius-sm); overflow-x: auto; font-size: 0.86rem; }
-.preview blockquote { border-left: 3px solid var(--accent); padding-left: 0.9rem; color: var(--text-muted); font-style: italic; margin: 0.9rem 0; }
-.preview img { max-width: 100%; border-radius: var(--radius-sm); margin: 0.9rem 0; }
-.preview table { border-collapse: collapse; width: 100%; margin: 0.9rem 0; font-size: 0.9rem; }
-.preview th, .preview td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; }
-
 .post-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border-soft); }
 .post-row:last-child { border-bottom: none; }
 .post-row .info { min-width: 0; }
@@ -402,7 +389,6 @@ img { display: block; max-width: 100%; height: auto; }
 /* ===================== 响应式 ===================== */
 @media (max-width: 900px) {
   .post-list { grid-template-columns: repeat(2, 1fr); }
-  .editor { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .post-list { grid-template-columns: 1fr; }
