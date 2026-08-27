@@ -69,7 +69,7 @@
   fetch("assets/vendor/bytemd/locales/zh_Hans.json")
     .then((r) => (r.ok ? r.json() : {}))
     .then((zh) => {
-      new bytemd.Editor({
+      const ed = new bytemd.Editor({
         target: document.getElementById("e-editor"),
         props: {
           value: "# 开始写作\n\n左侧是 Markdown 源码，右侧实时预览。\n",
@@ -79,6 +79,7 @@
           uploadImages,
         },
       });
+      ed.$on("change", (e) => ed.$set({ value: e.detail.value })); // 受控回环：驱动右侧预览
     });
 
   // 弹窗交互（同后台）

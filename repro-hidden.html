@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>复现实验：隐藏容器中创建 bytemd</title>
+  <link rel="stylesheet" href="assets/vendor/hljs-github-dark.min.css">
+  <link rel="stylesheet" href="assets/vendor/bytemd/bytemd.min.css">
+</head>
+<body>
+  <button id="show">显示面板</button>
+  <div id="panel" style="display:none"><div id="e-editor"></div></div>
+  <div id="diag" style="position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#111;color:#0f0;font:12px/1.6 Consolas,monospace;padding:6px 10px;max-height:180px;overflow:auto">
+<div>DIAG ready</div>
+</div>
+<script>
+(function () {
+  var box = null;
+  function log(msg, red) {
+    box = box || document.getElementById("diag");
+    var d = document.createElement("div");
+    d.textContent = msg;
+    if (red) d.style.color = "#ff5252";
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+  }
+  window.onerror = function (m, s, l) {
+    log("ERROR: " + m + " @ " + (s || "").split("/").pop() + ":" + l, true);
+  };
+  window.addEventListener("unhandledrejection", function (e) {
+    log("REJECTION: " + (e.reason && e.reason.message ? e.reason.message : e.reason), true);
+  });
+  window.__diaglog = log;
+})();
+</script>
+<script>window.process = window.process || { env: { NODE_ENV: "production" } };</script>
+  <script src="assets/vendor/highlight.min.js"></script>
+  <script src="assets/vendor/bytemd/plugin-gfm.min.js"></script>
+  <script src="assets/vendor/bytemd/plugin-highlight.min.js"></script>
+  <script src="assets/vendor/bytemd/bytemd.min.js"></script>
+  <script>
+  let ed;
+  window.onerror = function(m){ document.title = "ERR:" + m; };
+  fetch("assets/vendor/bytemd/locales/zh_Hans.json").then(r=>r.json()).then(zh=>{
+    let changes = 0;
+    // 模拟后台完整链路：页面加载即创建（隐藏容器）+ gfm/highlight 插件
+    ed = new bytemd.Editor({
+      target: document.getElementById("e-editor"),
+      props: {
+        value: "",
+        locale: zh,
+        plugins: [bytemdPluginGfm(), bytemdPluginHighlight()],
+      },
+    });
+    ed.$on("change", (e) => { changes++; document.title = "changes:" + changes + " len:" + e.detail.value.length;
+      window.__diaglog && window.__diaglog("change #" + changes + " len=" + e.detail.value.length); });
+    // 模拟 openEditor：1500ms 后显示面板并 $set 正文
+    setTimeout(() => {
+      document.getElementById("panel").style.display = "block";
+      ed.$set({ value: "# 已有文章\n\n旧正文段落。\n\n```js\nconsole.log(1);\n```\n" });
+    }, 1500);
+  });
+  </script>
+</body>
+</html>

@@ -354,7 +354,9 @@
     };
   }
 
-  function initEditor() {
+  function initEditor(done) {
+    // 懒加载：首次打开编辑面板时才创建，保证 CodeMirror 在可见容器中初始化
+    if (mdEditor) { done && done(); return; }
     if (typeof bytemd === "undefined" || typeof bytemdPluginGfm === "undefined") {
       toast("编辑器脚本加载失败，请刷新页面", "error");
       return;
@@ -373,7 +375,11 @@
             uploadImages,
           },
         });
-        mdEditor.$on("change", (e) => { curValue = e.detail.value; });
+        mdEditor.$on("change", (e) => {
+          curValue = e.detail.value;
+          mdEditor.$set({ value: curValue }); // 受控回环：驱动右侧预览与字数统计
+        });
+        done && done();
       });
   }
 
