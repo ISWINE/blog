@@ -376,6 +376,26 @@ img { display: block; max-width: 100%; height: auto; }
 .post-row .info .pmeta { color: var(--text-muted); font-size: 0.8rem; }
 .post-row .actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
 
+/* ===================== ByteMD 编辑器 ===================== */
+.bytemd {
+  height: 560px;
+  border-color: var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+.bytemd .bytemd-toolbar { background: var(--surface); }
+.bytemd .bytemd-sidebar { background: var(--surface); }
+.bytemd-fullscreen { z-index: 100; }
+/* 预览区代码块深色（与文章页一致） */
+.bytemd-preview pre {
+  background: #272b36;
+  color: #dbe1ee;
+  border-radius: 8px;
+}
+.bytemd-preview pre code { color: inherit; background: none; }
+/* GFM 任务列表复选框 */
+.bytemd-preview input[type="checkbox"] { margin-right: 0.4em; }
+
 /* 登录步骤 */
 .steps { margin: 0.8rem 0 1.2rem; padding-left: 1.3rem; }
 .steps li { margin: 0.5rem 0; color: var(--text); font-size: 0.92rem; line-height: 1.55; }

@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>后台 · 一隅</title>
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/vendor/vditor/dist/index.css">
+  <link rel="stylesheet" href="assets/vendor/hljs-github-dark.min.css">
+  <link rel="stylesheet" href="assets/vendor/bytemd/bytemd.min.css">
 </head>
 <body>
   <header class="topbar">
@@ -78,7 +79,11 @@
   <div id="toast" class="toast"></div>
   <button id="back-top" class="back-top">↑</button>
 
-  <script src="assets/vendor/vditor/dist/index.min.js"></script>
+  <script>window.process = window.process || { env: { NODE_ENV: "production" } };</script>
+  <script src="assets/vendor/highlight.min.js"></script>
+  <script src="assets/vendor/bytemd/plugin-gfm.min.js"></script>
+  <script src="assets/vendor/bytemd/plugin-highlight.min.js"></script>
+  <script src="assets/vendor/bytemd/bytemd.min.js"></script>
   <script src="config.js"></script>
   <script src="assets/js/admin.js"></script>
 </body>

@@ -29,7 +29,6 @@
   let cfg = { owner: "", repo: "", branch: "main", token: "" };
   let editingSlug = null; // null = 新建
   let slugManual = false;
-  let vditor = null; // Vditor 实例
 
   /* ---- toast ---- */
   function toast(msg, kind) {
@@ -308,7 +307,7 @@
     els.eSlug.value = post ? post.slug : "";
     els.eDate.value = post ? (post.date || today()) : today();
     els.eTags.value = post ? post.tags : "";
-    if (vditor) vditor.setValue(post ? post.body : "", true);
+    if (mdEditor) { curValue = post ? post.body : ""; mdEditor.$set({ value: curValue }); }
     els.list.style.display = "none";
     els.editor.style.display = "block";
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -318,31 +317,65 @@
   els.eTitle.addEventListener("input", () => { if (!slugManual) els.eSlug.value = slugify(els.eTitle.value); });
   els.eSlug.addEventListener("focus", () => { slugManual = true; });
 
-  /* ---- Vditor 编辑器 ---- */
-  function initVditor() {
-    if (typeof Vditor === "undefined") { toast("编辑器脚本加载失败，请刷新页面", "error"); return; }
-    vditor = new Vditor("e-editor", {
-      cdn: "assets/vendor/vditor",
-      lang: "zh_CN",
-      mode: "ir",
-      height: 480,
-      cache: { enable: false },
-      placeholder: "# 标题\n正文…",
-      toolbar: [
-        "emoji", "headings", "bold", "italic", "strike", "|",
-        "line", "quote", "list", "ordered-list", "check", "outdent", "indent", "|",
-        "code", "inline-code", "link", "upload", "table", "|",
-        "undo", "redo", "|", "edit-mode", "both", "preview", "fullscreen", "outline",
-      ],
-      upload: { handler: uploadImages },
-      after: () => { vditor.focus(); },
-    });
+  /* ---- ByteMD 编辑器 ---- */
+  let mdEditor = null;      // ByteMD 实例
+  let curValue = "";        // 编辑器当前内容缓存
+  // 常用编程语言（highlight.js 支持的标识符）
+  const CODE_LANGS = [
+    ["Text", ""], ["Bash", "bash"], ["C", "c"], ["C++", "cpp"], ["C#", "csharp"],
+    ["Java", "java"], ["JavaScript", "javascript"], ["TypeScript", "typescript"],
+    ["Python", "python"], ["Go", "go"], ["Rust", "rust"], ["PHP", "php"],
+    ["Ruby", "ruby"], ["Swift", "swift"], ["Kotlin", "kotlin"],
+    ["Objective-C", "objectivec"], ["CSS", "css"], ["HTML/XML", "xml"],
+    ["SQL", "sql"], ["JSON", "json"], ["YAML", "yaml"], ["Shell", "shell"],
+    ["Lua", "lua"], ["Markdown", "markdown"],
+  ];
+  // 自定义「代码块」下拉（掘金同款交互：点按钮弹出语言菜单）
+  function codeBlockPlugin() {
+    return {
+      actions: [{
+        title: "插入代码块",
+        icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5.28 3.72a.75.75 0 0 1 0 1.06L2.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L-.47 8l4.53-4.53a.75.75 0 0 1 1.06 0zm5.44 0a.75.75 0 0 0 0 1.06L13.94 8l-3.22 3.22a.75.75 0 1 0 1.06 1.06L16.47 8l-4.69-4.53a.75.75 0 0 0-1.06 0z"/><path d="M9.4 1.6a.7.7 0 0 1 .5.86L8.36 13.1a.7.7 0 0 1-1.36-.35L8.54 2.1a.7.7 0 0 1 .86-.5z"/></svg>',
+        handler: {
+          type: "dropdown",
+          actions: CODE_LANGS.map(([label, v]) => ({
+            title: label,
+            icon: "",
+            handler: { type: "action", click: (ctx) => ctx.insert("```" + v + "\n\n```") },
+          })),
+        },
+      }],
+    };
   }
 
-  /* ---- 图片上传（Vditor 工具栏 / 拖拽 / 粘贴触发）---- */
+  function initEditor() {
+    if (typeof bytemd === "undefined" || typeof bytemdPluginGfm === "undefined") {
+      toast("编辑器脚本加载失败，请刷新页面", "error");
+      return;
+    }
+    fetch("assets/vendor/bytemd/locales/zh_Hans.json")
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({}))
+      .then((zh) => {
+        mdEditor = new bytemd.Editor({
+          target: els.editorEl,
+          props: {
+            value: "",
+            placeholder: "# 标题\n正文…",
+            locale: zh,
+            plugins: [bytemdPluginGfm(), bytemdPluginHighlight(), codeBlockPlugin()],
+            uploadImages,
+          },
+        });
+        mdEditor.$on("change", (e) => { curValue = e.detail.value; });
+      });
+  }
+
+  /* ---- 图片上传（工具栏 / 拖拽 / 粘贴图片均触发）---- */
   async function uploadImages(files) {
-    if (!cfg.token) return "请先登录后再上传图片";
+    if (!cfg.token) { toast("请先登录后再上传图片", "error"); return []; }
     const base = els.eSlug.value || slugify(els.eTitle.value) || "img";
+    const out = [];
     for (const file of files) {
       const name = base + "-" + Date.now() + "-" + file.name.replace(/[^\w.\u4e00-\u9fff-]/g, "_");
       const rel = "assets/img/" + name;
@@ -354,12 +387,12 @@
           reader.readAsDataURL(file);
         });
         await putFile(rel, data, "上传图片 " + name);
-        vditor.insertValue(`\n![](${rel})\n`);
+        out.push({ url: rel });
       } catch (err) {
-        return "上传失败：" + err.message;
+        toast("上传失败：" + err.message, "error");
       }
     }
-    return null;
+    return out;
   }
 
   /* ---- 发布 / 删除 / 同步 ---- */
@@ -371,7 +404,7 @@
     const slug = (els.eSlug.value || slugify(title)).trim();
     const date = els.eDate.value || today();
     const tags = els.eTags.value;
-    const body = vditor ? vditor.getValue() : "";
+    const body = mdEditor ? curValue : "";
     if (!title) { toast("请填写标题", "error"); return; }
     if (!slug) { toast("请填写 slug", "error"); return; }
     if (!body.trim()) { toast("正文不能为空", "error"); return; }
@@ -447,6 +480,6 @@
   window.addEventListener("scroll", () => els.backTop.classList.toggle("show", window.scrollY > 400));
   els.backTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-  initVditor();
+  initEditor();
   loadAuth();
 })();
