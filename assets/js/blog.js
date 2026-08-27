@@ -225,6 +225,8 @@
 
   /* ===================== 路由 ===================== */
   function route() {
+  // 路由切换回顶部，避免上一页残留滚动位置导致新页面跳动
+  window.scrollTo({ top: 0, behavior: "instant" });
     const hash = location.hash.replace(/^#/, "");
     if (hash.startsWith("/post/")) {
       viewPost(decodeURIComponent(hash.slice(6)));
