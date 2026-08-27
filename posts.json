@@ -1,34 +1,14 @@
 {
   "posts": [
     {
-      "slug": "公司",
-      "title": "公司",
+      "slug": "git命令",
+      "title": "git命令",
       "date": "2026-08-27",
       "tags": [
-        "公司"
+        "git"
       ],
-      "excerpt": "公司是公司不能把日常情绪等一些列新区带去进去，尊重一切，职员就要走一个职员样子。这都不能做到还谈什么承担责任。 2018年5月14日 10：15 每天都要看一遍 虽然不知道适不适合…",
-      "readTime": 1
-    },
-    {
-      "slug": "samba",
-      "title": "samba",
-      "date": "2026-08-27",
-      "tags": [
-        "samba"
-      ],
-      "excerpt": "samba CentOS VMware Windows 环境samba CentOS VMware Windows 检测 samba 有没有安装 本文创建一个最简单的samb多用户…",
-      "readTime": 10
-    },
-    {
-      "slug": "bridge-network-cfion",
-      "title": "Bridge-network-cfion",
-      "date": "2026-08-27",
-      "tags": [
-        "vmware"
-      ],
-      "excerpt": "Bridge network cfion 配置静态网卡 查看windows的网关 linux ifconfig Windows ipconfig /all C:\\Users\\126…",
-      "readTime": 3
+      "excerpt": "快速设置 如果你以前做过这种事情 要么 HTTPS SSH git@github.com:lihuatedata/44.git 我们建议每个存储库都包含一个 README， LIC…",
+      "readTime": 6
     },
     {
       "slug": "配置本地镜像仓库",
@@ -41,24 +21,33 @@
       "readTime": 1
     },
     {
-      "slug": "git命令",
-      "title": "git命令",
+      "slug": "bridge-network-cfion",
+      "title": "Bridge-network-cfion",
       "date": "2026-08-27",
       "tags": [
-        "git"
+        "vmware"
       ],
-      "excerpt": "快速设置 如果你以前做过这种事情 要么 HTTPS SSH git@github.com:lihuatedata/44.git 我们建议每个存储库都包含一个 README， LIC…",
-      "readTime": 6
+      "excerpt": "Bridge network cfion 配置静态网卡 查看windows的网关 linux ifconfig Windows ipconfig /all C:\\Users\\126…",
+      "readTime": 3
     },
     {
-      "slug": "测试",
-      "title": "测试",
-      "date": "2026-08-26",
+      "slug": "samba",
+      "title": "samba",
+      "date": "2026-08-27",
       "tags": [
-        "测试",
-        "ceshi"
+        "samba"
       ],
-      "excerpt": "你好",
+      "excerpt": "samba CentOS VMware Windows 环境samba CentOS VMware Windows 检测 samba 有没有安装 本文创建一个最简单的samb多用户…",
+      "readTime": 10
+    },
+    {
+      "slug": "公司",
+      "title": "公司",
+      "date": "2026-08-27",
+      "tags": [
+        "公司"
+      ],
+      "excerpt": "公司是公司不能把日常情绪等一些列新区带去进去，尊重一切，职员就要走一个职员样子。这都不能做到还谈什么承担责任。 2018年5月14日 10：15 每天都要看一遍 虽然不知道适不适合…",
       "readTime": 1
     },
     {
@@ -73,6 +62,17 @@
       "readTime": 4
     },
     {
+      "slug": "测试",
+      "title": "测试",
+      "date": "2026-08-26",
+      "tags": [
+        "测试",
+        "ceshi"
+      ],
+      "excerpt": "你好",
+      "readTime": 1
+    },
+    {
       "slug": "welcome",
       "title": "欢迎来到「一隅」",
       "date": "2026-08-25",
@@ -80,7 +80,7 @@
         "说明",
         "入门"
       ],
-      "excerpt": "欢迎来到「一隅」 这是你的博客的第一篇文章。这里是一隅——一个安静、干净、只属于你和文字的地方。 这里有什么 Markdown 写作 ：用熟悉的语法写文章，支持列表、表格、代码块、…",
+      "excerpt": "这是你的博客的第一篇文章。这里是一隅——一个安静、干净、只属于你和文字的地方。 这里有什么 Markdown 写作 ：用熟悉的语法写文章，支持列表、表格、代码块、引用…… 在线编辑…",
       "readTime": 1
     }
   ]
