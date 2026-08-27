@@ -4,6 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ByteMD 编辑器预览 · 一隅</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", t);
+        document.addEventListener("DOMContentLoaded", function () {
+          var b = document.getElementById("theme-toggle");
+          if (b) b.textContent = t === "dark" ? "☀️" : "🌙";
+        });
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/vendor/hljs-github-dark.min.css">
   <link rel="stylesheet" href="assets/vendor/bytemd/bytemd.min.css">
@@ -20,6 +33,7 @@
         <a href="index.html">博客</a>
         <a href="admin.html">后台</a>
       </nav>
+      <button id="theme-toggle" class="icon-btn" title="切换明暗模式">🌙</button>
     </div>
     <div class="ed-body">
       <div id="e-editor"></div>
@@ -91,6 +105,13 @@
     if (!pop.classList.contains("open")) return;
     if (pop.contains(ev.target) || ball.contains(ev.target)) return;
     pop.classList.remove("open");
+  });
+
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const t = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", t);
+    try { localStorage.setItem("theme", t); } catch (e) {}
+    document.getElementById("theme-toggle").textContent = t === "dark" ? "☀️" : "🌙";
   });
   </script>
 </body>

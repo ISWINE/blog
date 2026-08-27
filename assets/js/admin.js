@@ -503,4 +503,20 @@
 
   initEditor();
   loadAuth();
+
+  /* ---- 明暗模式（与前台同一 localStorage key，自动同步） ---- */
+  function applyTheme(t) {
+    document.documentElement.setAttribute("data-theme", t);
+    try { localStorage.setItem("theme", t); } catch (e) {}
+    var btns = [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-ed")];
+    btns.forEach(function (b) { if (b) b.textContent = t === "dark" ? "☀️" : "🌙"; });
+  }
+  [document.getElementById("theme-toggle"), document.getElementById("theme-toggle-ed")]
+    .forEach(function (b) {
+      if (!b) return;
+      b.addEventListener("click", function () {
+        applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+      });
+    });
+  applyTheme(document.documentElement.getAttribute("data-theme") || "light");
 })();
