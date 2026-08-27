@@ -6,6 +6,20 @@
   <meta name="description" content="一隅 · 一个安静、干净的单页博客">
   <title>一隅 · 记录一些值得记住的东西</title>
   <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    // 主题预设（与后台同一 localStorage key），提前执行避免夜间闪白
+    (function () {
+      try {
+        var t = localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", t);
+        document.addEventListener("DOMContentLoaded", function () {
+          var b = document.getElementById("theme-toggle");
+          if (b) b.textContent = t === "dark" ? "☀️" : "🌙";
+        });
+      } catch (e) {}
+    })();
+  </script>
   <!-- 评论预加载：提前建立连接并下载 giscus 脚本，让评论区尽早出现 -->
   <link rel="preconnect" href="https://giscus.app" crossorigin>
   <link rel="preconnect" href="https://api.github.com" crossorigin>
@@ -37,6 +51,7 @@
   <button id="back-top" class="back-top" title="返回顶部">↑</button>
   <div id="toast" class="toast"></div>
 
+  <script src="assets/vendor/highlight.min.js?v=11"></script>
   <script src="assets/vendor/marked.min.js"></script>
   <script src="assets/vendor/purify.min.js"></script>
   <script src="config.js"></script>

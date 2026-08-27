@@ -40,6 +40,40 @@
 /* ===================== 基础 ===================== */
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; }
+
+/* ---------- 前台代码块语法高亮（highlight.js，配色跟随明暗模式） ---------- */
+:root {
+  --hljs-keyword: #d73a49;
+  --hljs-string: #0a3069;
+  --hljs-comment: #6a737d;
+  --hljs-number: #005cc5;
+  --hljs-title: #6f42c1;
+  --hljs-attr: #e36209;
+  --hljs-literal: #005cc5;
+  --hljs-meta: #6a737d;
+}
+[data-theme="dark"] {
+  --hljs-keyword: #ff7b72;
+  --hljs-string: #a5d6ff;
+  --hljs-comment: #8b949e;
+  --hljs-number: #79b8ff;
+  --hljs-title: #d2a8ff;
+  --hljs-attr: #ffa657;
+  --hljs-literal: #79b8ff;
+  --hljs-meta: #8b949e;
+}
+.post .hljs-keyword, .post .hljs-selector-tag, .post .hljs-doctag { color: var(--hljs-keyword); }
+.post .hljs-string, .post .hljs-regexp, .post .hljs-addition { color: var(--hljs-string); }
+.post .hljs-comment, .post .hljs-quote { color: var(--hljs-comment); font-style: italic; }
+.post .hljs-number, .post .hljs-variable, .post .hljs-template-variable,
+.post .hljs-type, .post .hljs-deletion { color: var(--hljs-number); }
+.post .hljs-title, .post .hljs-section, .post .hljs-name, .post .hljs-selector-id,
+.post .hljs-selector-class { color: var(--hljs-title); }
+.post .hljs-attr, .post .hljs-attribute, .post .hljs-built_in { color: var(--hljs-attr); }
+.post .hljs-literal, .post .hljs-symbol, .post .hljs-bullet { color: var(--hljs-literal); }
+.post .hljs-meta { color: var(--hljs-meta); }
+.post .hljs-emphasis { font-style: italic; }
+.post .hljs-strong { font-weight: 600; }
 body {
   margin: 0;
   background: var(--bg);
@@ -238,7 +272,7 @@ img { display: block; max-width: 100%; height: auto; }
   border-radius: var(--radius-sm);
   overflow-x: auto;
   margin: 1.2rem 0;
-  font-size: 0.88rem;
+  font-size: 1rem;
   line-height: 1.55;
 }
 .post pre code { background: none; color: inherit; padding: 0; }

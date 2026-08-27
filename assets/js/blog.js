@@ -90,6 +90,14 @@
     return DOMPurify.sanitize(html, { ADD_ATTR: ["target", "rel"] });
   }
 
+
+  // 代码块语法高亮（highlight.js；脚本未载入时静默跳过）
+  function highlightIn(container) {
+    if (typeof hljs === "undefined") return;
+    container.querySelectorAll("pre code").forEach((el) => {
+      try { hljs.highlightElement(el); } catch (e) { /* 单块失败不影响其余 */ }
+    });
+  }
   /* ===================== 抓取 ===================== */
   async function fetchText(url) {
     const res = await fetch(url, { cache: "no-store" });
@@ -164,6 +172,7 @@
         </div>
         <h1>${escapeHtml(meta.title || slug)}</h1>
         <div class="post-body">${renderMarkdown(body)}</div>`;
+        highlightIn(appEl);
     } catch (e) {
       appEl.innerHTML = `<div class="error">加载失败：${escapeHtml(e.message)}<br><a href="#/">返回列表</a></div>`;
       toast("加载失败", "error");
@@ -218,6 +227,7 @@
       const md = await fetchText("about.md");
       document.title = "关于 · 一隅";
       appEl.innerHTML = `<article class="about post"><div class="post-body">${renderMarkdown(md)}</div></article>`;
+      highlightIn(appEl);
     } catch (e) {
       appEl.innerHTML = `<div class="error">关于页加载失败。</div>`;
     }
