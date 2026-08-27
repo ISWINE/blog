@@ -57,21 +57,27 @@
       </div>
     </section>
 
-    <!-- 编辑器 -->
-    <section id="editor-panel" class="admin-card" style="display:none">
-      <h2 id="editor-title">新建文章</h2>
-      <div class="form-row">
-        <label class="field">标题<input id="e-title" type="text" placeholder="文章标题"></label>
+<!-- 编辑器（掘金式全屏） -->
+    <section id="editor-panel" style="display:none">
+      <div class="ed-topbar">
+        <a href="#" id="ed-back" class="ed-back" title="返回列表">←</a>
+        <input id="e-title" class="ed-title" type="text" placeholder="请输入文章标题…">
+        <button id="meta-ball" class="meta-ball" title="文章设置：slug / 日期 / 标签"></button>
+        <button id="publish-btn" class="btn">发布</button>
+        <nav class="nav" style="margin-left:0.2rem">
+          <a href="index.html">博客</a>
+          <a href="admin.html" class="active">后台</a>
+        </nav>
+      </div>
+      <div class="ed-body">
+        <div id="e-editor"></div>
+      </div>
+      <div id="meta-pop" class="meta-pop">
+        <div class="meta-pop-head">文章设置<button id="meta-close" class="meta-close">×</button></div>
         <label class="field">slug<input id="e-slug" type="text" placeholder="留空则从标题生成"></label>
         <label class="field">日期<input id="e-date" type="date"></label>
-      </div>
-      <div class="form-row">
-        <label class="field" style="flex:1 1 100%">标签（逗号分隔）<input id="e-tags" type="text" placeholder="标签1, 标签2"></label>
-      </div>
-      <div id="e-editor"></div>
-      <div style="display:flex;gap:.5rem;margin-top:1rem">
-        <button id="publish-btn" class="btn">发布</button>
-        <button id="cancel-btn" class="btn ghost">取消</button>
+        <label class="field">标签（逗号分隔）<input id="e-tags" type="text" placeholder="标签1, 标签2"></label>
+        <p class="hint" style="margin:.4rem 0 0">留空的 slug 会按标题自动生成。</p>
       </div>
     </section>
   </main>

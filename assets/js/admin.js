@@ -16,13 +16,13 @@
     editor: $("#editor-panel"),
     postList: $("#post-list"),
     userHint: $("#user-hint"),
-    editorTitle: $("#editor-title"),
     fOwner: $("#f-owner"), fRepo: $("#f-repo"), fBranch: $("#f-branch"), fToken: $("#f-token"),
     eTitle: $("#e-title"), eSlug: $("#e-slug"), eDate: $("#e-date"), eTags: $("#e-tags"),
     editorEl: $("#e-editor"),
+    edBack: $("#ed-back"), metaBall: $("#meta-ball"), metaPop: $("#meta-pop"), metaClose: $("#meta-close"),
     loginBtn: $("#login-btn"), pasteLoginBtn: $("#paste-login-btn"), linkHint: $("#link-hint"),
     newBtn: $("#new-btn"), syncBtn: $("#sync-btn"),
-    logoutBtn: $("#logout-btn"), publishBtn: $("#publish-btn"), cancelBtn: $("#cancel-btn"),
+    logoutBtn: $("#logout-btn"), publishBtn: $("#publish-btn"),
     toast: $("#toast"), backTop: $("#back-top"),
   };
 
@@ -301,16 +301,22 @@
   function openEditor(post) {
     editingSlug = post ? post.slug : null;
     slugManual = !!post;
-    els.editorTitle.textContent = post ? "编辑文章" : "新建文章";
     els.publishBtn.textContent = post ? "更新" : "发布";
     els.eTitle.value = post ? post.title : "";
     els.eSlug.value = post ? post.slug : "";
     els.eDate.value = post ? (post.date || today()) : today();
     els.eTags.value = post ? post.tags : "";
-    if (mdEditor) { curValue = post ? post.body : ""; mdEditor.$set({ value: curValue }); }
-    els.list.style.display = "none";
-    els.editor.style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    curValue = post ? post.body : ""; // 先保证内容缓存正确，编辑器未就绪时发布也不会丢内容
+    if (mdEditor) mdEditor.$set({ value: curValue });
+    els.metaPop.classList.remove("open");
+    els.editor.classList.add("editor-open");
+    els.editor.style.display = "flex"; // 覆盖模板上的内联 display:none
+    window.scrollTo({ top: 0 });
+  }
+  function closeEditor() {
+    els.editor.classList.remove("editor-open");
+    els.metaPop.classList.remove("open");
+    els.editor.style.display = "none";
   }
 
   /* ---- 编辑器交互 ---- */
@@ -341,7 +347,7 @@
           actions: CODE_LANGS.map(([label, v]) => ({
             title: label,
             icon: "",
-            handler: { type: "action", click: (ctx) => ctx.insert("```" + v + "\n\n```") },
+            handler: { type: "action", click: (ctx) => ctx.appendBlock("```" + v + "\n\n```") },
           })),
         },
       }],
@@ -396,8 +402,17 @@
   }
 
   /* ---- 发布 / 删除 / 同步 ---- */
-  els.cancelBtn.addEventListener("click", () => { els.editor.style.display = "none"; els.list.style.display = "block"; loadPostList(); });
+  els.edBack.addEventListener("click", (e) => { e.preventDefault(); closeEditor(); loadPostList(); });
   els.publishBtn.addEventListener("click", publishPost);
+
+  // 文章设置弹窗（圆球）
+  els.metaBall.addEventListener("click", () => els.metaPop.classList.toggle("open"));
+  els.metaClose.addEventListener("click", () => els.metaPop.classList.remove("open"));
+  document.addEventListener("mousedown", (ev) => {
+    if (!els.metaPop.classList.contains("open")) return;
+    if (els.metaPop.contains(ev.target) || els.metaBall.contains(ev.target)) return;
+    els.metaPop.classList.remove("open");
+  });
 
   async function publishPost() {
     const title = els.eTitle.value.trim();
@@ -419,7 +434,7 @@
       entries.sort((a, b) => (a.date < b.date ? 1 : -1));
       await writePostsJson(entries);
       toast((editingSlug ? "已更新" : "已发布") + "，页面几分钟后生效", "ok");
-      els.editor.style.display = "none";
+      closeEditor();
       await loadPostList();
     } catch (e) { toast("发布失败：" + e.message, "error"); }
     finally { setBusy(false); }

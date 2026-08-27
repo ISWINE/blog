@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ByteMD 编辑器预览 · 一隅</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/vendor/hljs-github-dark.min.css">
+  <link rel="stylesheet" href="assets/vendor/bytemd/bytemd.min.css">
+</head>
+<body class="editor-open-host">
+  <!-- 全屏编辑视图（与后台编辑面板同款结构） -->
+  <div id="editor-panel" class="editor-open">
+    <div class="ed-topbar">
+      <span class="ed-back" title="返回">←</span>
+      <input id="e-title" class="ed-title" type="text" placeholder="请输入文章标题…" value="">
+      <button id="meta-ball" class="meta-ball" title="文章设置：slug / 日期 / 标签"></button>
+      <button id="publish-btn" class="btn">发布</button>
+      <nav class="nav" style="margin-left:0.2rem">
+        <a href="index.html">博客</a>
+        <a href="admin.html">后台</a>
+      </nav>
+    </div>
+    <div class="ed-body">
+      <div id="e-editor"></div>
+    </div>
+    <div id="meta-pop" class="meta-pop">
+      <div class="meta-pop-head">文章设置<button id="meta-close" class="meta-close">×</button></div>
+      <label class="field">slug<input type="text" placeholder="留空则从标题生成"></label>
+      <label class="field">日期<input type="date"></label>
+      <label class="field">标签（逗号分隔）<input type="text" placeholder="标签1, 标签2"></label>
+    </div>
+  </div>
+
+  <script>window.process = window.process || { env: { NODE_ENV: "production" } };</script>
+  <script src="assets/vendor/highlight.min.js"></script>
+  <script src="assets/vendor/bytemd/plugin-gfm.min.js"></script>
+  <script src="assets/vendor/bytemd/plugin-highlight.min.js"></script>
+  <script src="assets/vendor/bytemd/bytemd.min.js"></script>
+  <script>
+  const CODE_LANGS = [
+    ["Text", ""], ["Bash", "bash"], ["C", "c"], ["C++", "cpp"], ["C#", "csharp"],
+    ["Java", "java"], ["JavaScript", "javascript"], ["TypeScript", "typescript"],
+    ["Python", "python"], ["Go", "go"], ["Rust", "rust"], ["PHP", "php"],
+    ["Ruby", "ruby"], ["Swift", "swift"], ["Kotlin", "kotlin"],
+    ["Objective-C", "objectivec"], ["CSS", "css"], ["HTML/XML", "xml"],
+    ["SQL", "sql"], ["JSON", "json"], ["YAML", "yaml"], ["Shell", "shell"],
+    ["Lua", "lua"], ["Markdown", "markdown"],
+  ];
+  async function uploadImages(files) {
+    return files.map(f => ({ url: "assets/img/" + f.name }));
+  }
+  function codeBlockPlugin() {
+    return {
+      actions: [{
+        title: "插入代码块",
+        icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M5.28 3.72a.75.75 0 0 1 0 1.06L2.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L-.47 8l4.53-4.53a.75.75 0 0 1 1.06 0zm5.44 0a.75.75 0 0 0 0 1.06L13.94 8l-3.22 3.22a.75.75 0 1 0 1.06 1.06L16.47 8l-4.69-4.53a.75.75 0 0 0-1.06 0z"/></svg>',
+        handler: {
+          type: "dropdown",
+          actions: CODE_LANGS.map(([label, v]) => ({
+            title: label,
+            icon: "",
+            handler: { type: "action", click: (ctx) => ctx.appendBlock("```" + v + "\n\n```") },
+          })),
+        },
+      }],
+    };
+  }
+  fetch("assets/vendor/bytemd/locales/zh_Hans.json")
+    .then((r) => (r.ok ? r.json() : {}))
+    .then((zh) => {
+      new bytemd.Editor({
+        target: document.getElementById("e-editor"),
+        props: {
+          value: "# 开始写作\n\n左侧是 Markdown 源码，右侧实时预览。\n",
+          placeholder: "# 标题\n正文…",
+          locale: zh,
+          plugins: [bytemdPluginGfm(), bytemdPluginHighlight(), codeBlockPlugin()],
+          uploadImages,
+        },
+      });
+    });
+
+  // 弹窗交互（同后台）
+  const pop = document.getElementById("meta-pop");
+  const ball = document.getElementById("meta-ball");
+  ball.addEventListener("click", () => pop.classList.toggle("open"));
+  document.getElementById("meta-close").addEventListener("click", () => pop.classList.remove("open"));
+  document.addEventListener("mousedown", (ev) => {
+    if (!pop.classList.contains("open")) return;
+    if (pop.contains(ev.target) || ball.contains(ev.target)) return;
+    pop.classList.remove("open");
+  });
+  </script>
+</body>
+</html>

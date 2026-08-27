@@ -303,7 +303,7 @@ img { display: block; max-width: 100%; height: auto; }
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s, transform 0.25s;
-  z-index: 100;
+  z-index: 300;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.error { background: #c0392b; color: #fff; }
@@ -377,15 +377,108 @@ img { display: block; max-width: 100%; height: auto; }
 .post-row .actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
 
 /* ===================== ByteMD 编辑器 ===================== */
+/* 编辑面板打开时铺满视口（掘金式） */
+#editor-panel.editor-open {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+.ed-topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.55rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ed-topbar .nav { flex-shrink: 0; }
+.ed-back {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--text-muted);
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+}
+.ed-back:hover { color: var(--accent); background: var(--surface-soft); text-decoration: none; }
+.ed-title {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: "Songti SC", "STSong", "SimSun", "Georgia", serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  padding: 0.25rem 0.2rem;
+}
+.ed-title::placeholder { color: var(--text-muted); opacity: 0.55; }
+.meta-ball {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 30% 30%, #ffd8a8, transparent 55%),
+    linear-gradient(135deg, #fc5531 10%, #b06ab3 90%);
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.meta-ball:hover { transform: scale(1.08); box-shadow: var(--shadow-hover); }
+.ed-body { flex: 1; min-height: 0; padding: 0 1rem 1rem; }
+.ed-body #e-editor,
+.ed-body .bytemd { height: 100%; }
+
+/* 文章设置弹窗 */
+.meta-pop {
+  position: fixed;
+  top: 60px;
+  right: 14px;
+  z-index: 210;
+  width: min(330px, calc(100vw - 28px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  padding: 1rem;
+  display: none;
+}
+.meta-pop.open { display: block; }
+.meta-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+}
+.meta-close {
+  border: none;
+  background: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+}
+.meta-close:hover { color: var(--text); background: var(--surface-soft); }
+.meta-pop .field { display: block; margin-bottom: 0.7rem; }
+
 .bytemd {
-  height: 560px;
+  height: 100%;
   border-color: var(--border);
   border-radius: var(--radius-sm);
   font-family: inherit;
 }
 .bytemd .bytemd-toolbar { background: var(--surface); }
 .bytemd .bytemd-sidebar { background: var(--surface); }
-.bytemd-fullscreen { z-index: 100; }
+.bytemd-fullscreen { z-index: 220; }
 /* 预览区代码块深色（与文章页一致） */
 .bytemd-preview pre {
   background: #272b36;
